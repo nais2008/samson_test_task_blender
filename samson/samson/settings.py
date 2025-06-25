@@ -26,6 +26,7 @@ ALLOWED_HOSTS = os.environ.get(
 
 
 INSTALLED_APPS = [
+    "apps.model3d.apps.Model3DConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
