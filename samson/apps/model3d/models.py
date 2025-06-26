@@ -1,3 +1,5 @@
+import django.core
+import django.core.validators
 import django.db.models
 
 __all__ = []
@@ -39,6 +41,19 @@ class LightType(django.db.models.Model):
         choices=TypeLight.choices,
         default=TypeLight.POINT,
         max_length=150,
+    )
+    energy = django.db.models.PositiveIntegerField(
+        "energy",
+        help_text="light energy",
+        default=30,
+    )
+    color = django.db.models.CharField(
+        "color",
+        "light color in HEX",
+        max_length=7,
+        validators=[
+            django.core.validators.RegexValidator(r"^#[0-9a-fA-F]{6}$"),
+        ]
     )
 
 
