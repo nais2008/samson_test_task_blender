@@ -24,6 +24,8 @@ ALLOWED_HOSTS = os.environ.get(
     "127.0.0.1,localhost",
 ).split(",")
 
+BLENDER_PATH = os.environ.get("DJANGO_BLENDER_PATH", "blender")
+
 
 INSTALLED_APPS = [
     "apps.model3d.apps.Model3DConfig",

@@ -2,7 +2,7 @@ import django.core
 import django.core.validators
 import django.db.models
 
-__all__ = []
+__all__ = ["Model3D", "LightType", "Texture"]
 
 
 class Model3D(django.db.models.Model):
@@ -12,9 +12,7 @@ class Model3D(django.db.models.Model):
         auto_now_add=True,
     )
     json_data = django.db.models.FileField(
-        "data json",
-        help_text="path to data json",
-        upload_to="json"
+        "data json", help_text="path to data json", upload_to="json",
     )
     scene_file = django.db.models.FileField(
         "scene file",

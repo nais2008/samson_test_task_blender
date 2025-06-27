@@ -34,3 +34,4 @@ max-line-length=79
 inline-quotes=double
 import-order-style=google
 max-expression-complexity=10
+application-import-names=apps.model3d,

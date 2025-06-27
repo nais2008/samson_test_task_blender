@@ -1,19 +1,29 @@
-import bpy
-import sys
 import json
 import math
-import mathutils
 import os
-import json
 import pathlib
+import sys
 
-BASE_DIR = pathlib.Path(__file__).parent.parent.parent  # Поднимаемся на 3 уровня вверх от generate_scene.py
-MEDIA_ROOT = BASE_DIR / 'media'
+import bpy
+import mathutils
+
+__all__ = ()
+
+BASE_DIR = pathlib.Path(
+    __file__,
+).parent.parent.parent
+MEDIA_ROOT = BASE_DIR / "media"
 
 
 def get_absolute_media_path(relative_path):
     try:
-        clean_path = str(relative_path).lstrip('/').lstrip('\\').replace('./', '').replace('.\\', '')
+        clean_path = (
+            str(relative_path)
+            .lstrip("/")
+            .lstrip("\\")
+            .replace("./", "")
+            .replace(".\\", "")
+        )
         abs_path = os.path.join(MEDIA_ROOT, clean_path)
 
         if os.path.exists(abs_path):
@@ -25,7 +35,7 @@ def get_absolute_media_path(relative_path):
 
 
 def clear_scene():
-    bpy.ops.object.select_all(action='SELECT')
+    bpy.ops.object.select_all(action="SELECT")
     bpy.ops.object.delete()
 
 
@@ -60,10 +70,12 @@ def create_textured_material(texture_path):
     mapping_node.inputs["Scale"].default_value = (1.0, 1.0, 1.0)
 
     links.new(
-        image_node.outputs["Color"], principled_bsdf.inputs["Base Color"],
+        image_node.outputs["Color"],
+        principled_bsdf.inputs["Base Color"],
     )
     links.new(
-        principled_bsdf.outputs["BSDF"], new_output_node.inputs["Surface"],
+        principled_bsdf.outputs["BSDF"],
+        new_output_node.inputs["Surface"],
     )
 
     return material
@@ -123,10 +135,18 @@ def add_wall(x1, y1, x2, y2, height=5, thickness=0.2, texture_path=None):
         mathutils.Vector((p1.x - right_normal.x, p1.y - right_normal.y, 0)),
         mathutils.Vector((p2.x - right_normal.x, p2.y - right_normal.y, 0)),
         mathutils.Vector((p2.x + right_normal.x, p2.y + right_normal.y, 0)),
-        mathutils.Vector((p1.x + right_normal.x, p1.y + right_normal.y, height)),
-        mathutils.Vector((p1.x - right_normal.x, p1.y - right_normal.y, height)),
-        mathutils.Vector((p2.x - right_normal.x, p2.y - right_normal.y, height)),
-        mathutils.Vector((p2.x + right_normal.x, p2.y + right_normal.y, height)),
+        mathutils.Vector(
+            (p1.x + right_normal.x, p1.y + right_normal.y, height)
+        ),
+        mathutils.Vector(
+            (p1.x - right_normal.x, p1.y - right_normal.y, height)
+        ),
+        mathutils.Vector(
+            (p2.x - right_normal.x, p2.y - right_normal.y, height)
+        ),
+        mathutils.Vector(
+            (p2.x + right_normal.x, p2.y + right_normal.y, height)
+        ),
     ]
 
     faces = [
@@ -181,20 +201,20 @@ def add_wall(x1, y1, x2, y2, height=5, thickness=0.2, texture_path=None):
 
 
 def add_light(light_data):
-    light = bpy.data.lights.new(name="Light", type='POINT')
+    light = bpy.data.lights.new(name="Light", type="POINT")
     light.energy = 1000
     light.color = (1.0, 1.0, 1.0)
 
     light_obj = bpy.data.objects.new(name="Light", object_data=light)
     light_obj.location = (
-        light_data['cordinate']['x'],
-        light_data['cordinate']['y'],
-        light_data['cordinate']['z']
+        light_data["cordinate"]["x"],
+        light_data["cordinate"]["y"],
+        light_data["cordinate"]["z"],
     )
     light_obj.rotation_euler = (
-        math.radians(light_data['rotate']['x']),
-        math.radians(light_data['rotate']['y']),
-        math.radians(light_data['rotate']['z'])
+        math.radians(light_data["rotate"]["x"]),
+        math.radians(light_data["rotate"]["y"]),
+        math.radians(light_data["rotate"]["z"]),
     )
 
     bpy.context.collection.objects.link(light_obj)
@@ -243,9 +263,9 @@ def export_scene(output_path):
     try:
         bpy.ops.export_scene.gltf(
             filepath=output_path,
-            export_format='GLB',
+            export_format="GLB",
             export_cameras=True,
-            export_lights=True
+            export_lights=True,
         )
         return True
     except Exception as e:
@@ -261,42 +281,49 @@ def generate_from_json(json_path, output_path):
         if isinstance(data, list) and len(data) > 0:
             data = data[0]
         else:
-            print("Ошибка: JSON должен быть массивом с хотя бы одним элементом")
+            print(
+                "Ошибка: JSON должен быть массивом с хотя бы одним элементом"
+            )
             return False
 
         clear_scene()
 
-        if 'objects' in data:
-            for obj in data['objects']:
-                if 'url' in obj and 'coordinates' in obj:
-                    load_and_place_model(obj['url'], obj['coordinates'])
+        if "objects" in data:
+            for obj in data["objects"]:
+                if "url" in obj and "coordinates" in obj:
+                    load_and_place_model(obj["url"], obj["coordinates"])
 
-        if 'room' in data and 'contour' in data['room']:
-            for wall in data['room']['contour']:
-                texture_path = wall.get('texture')
+        if "room" in data and "contour" in data["room"]:
+            for wall in data["room"]["contour"]:
+                texture_path = wall.get("texture")
 
                 add_wall(
-                    wall['x1'], wall['y1'], wall['x2'], wall['y2'],
+                    wall["x1"],
+                    wall["y1"],
+                    wall["x2"],
+                    wall["y2"],
                     height=5,
-                    texture_path=texture_path
+                    texture_path=texture_path,
                 )
 
-        if 'light' in data:
-            for light in data['light']:
-                if 'cordinate' in light:
+        if "light" in data:
+            for light in data["light"]:
+                if "cordinate" in light:
                     light_data = {
-                        'cordinate': light['cordinate'],
-                        'rotate': light['cordinate'].get('rotate', {'x': 0, 'y': 0, 'z': 0})
+                        "cordinate": light["cordinate"],
+                        "rotate": light["cordinate"].get(
+                            "rotate", {"x": 0, "y": 0, "z": 0}
+                        ),
                     }
                     add_light(light_data)
 
-        if 'room' in data and 'contour' in data['room']:
-            room_bounds = find_room_bounds(data['room']['contour'])
+        if "room" in data and "contour" in data["room"]:
+            room_bounds = find_room_bounds(data["room"]["contour"])
             min_x, max_x, min_y, max_y = room_bounds
 
-            if 'floor' in data:
+            if "floor" in data:
                 floor = add_floor(min_x, max_x, min_y, max_y)
-                floor_texture = get_absolute_media_path(data['floor'])
+                floor_texture = get_absolute_media_path(data["floor"])
                 if floor_texture:
                     custom_material = create_textured_material(floor_texture)
                     floor.data.materials.clear()
