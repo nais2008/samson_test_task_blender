@@ -145,7 +145,6 @@ python3 manage.py migrate
     ]
   }
 ]
-
 ```
 
 ### Ответ
@@ -157,6 +156,19 @@ python3 manage.py migrate
     "scene_file_url": "/media/3d_models/scene_14.glb"
 }
 ```
+
+### Как выглядит
+
+<model-viewer
+  src="./samson/media/3d_models/scene_12.glb"
+  camera-controls
+  auto-rotate
+  shadow-intensity="1"
+  environment-image="neutral"
+  poster="poster.png"
+  alt="A 3D model of an object"
+  style="width: 400px; height: 300px;"
+></model-viewer>
 
 ## Я старался, рад буду если прочитали)
 
