@@ -11,9 +11,10 @@ class Model3D(django.db.models.Model):
         help_text="date and time create",
         auto_now_add=True,
     )
-    json_data = django.db.models.JSONField(
+    json_data = django.db.models.FileField(
         "data json",
-        default="[]",
+        help_text="path to data json",
+        upload_to="json"
     )
     scene_file = django.db.models.FileField(
         "scene file",
@@ -53,7 +54,7 @@ class LightType(django.db.models.Model):
         max_length=7,
         validators=[
             django.core.validators.RegexValidator(r"^#[0-9a-fA-F]{6}$"),
-        ]
+        ],
     )
 
 
@@ -61,5 +62,5 @@ class Texture(django.db.models.Model):
     texture_path = django.db.models.ImageField(
         "texture path",
         help_text="path to texture",
-        upload_to="texture/",
+        upload_to="textures/",
     )

@@ -8,6 +8,10 @@ urlpatterns = [
         "admin/",
         django.contrib.admin.site.urls,
     ),
+    django.urls.path(
+        "models/",
+        django.urls.include("apps.model3d.urls"),
+    ),
 ]
 
 if django.conf.settings.DEBUG:
